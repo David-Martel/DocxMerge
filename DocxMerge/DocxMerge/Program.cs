@@ -1,16 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Packaging;
-using System.IO;
-using System.Xml;
-using System.Xml.Linq;
-using CommandLine;
-
-namespace DocxMerge
+﻿namespace DocxMerge
 {
     class Program
     {
@@ -45,7 +33,8 @@ namespace DocxMerge
                     ExitWithError("Unable to find {0}", file);
             }
 
-            try {
+            try
+            {
                 if (verbose) Console.WriteLine("Creating initial document");
                 File.Copy(inputFiles.First(), output, force);
 
@@ -70,15 +59,15 @@ namespace DocxMerge
                             RepairSentenceSpacing(filepath, verbose);
 
                         using (FileStream fileStream = File.Open(filepath, FileMode.Open))
-                            chunk.FeedData(fileStream);                        
+                            chunk.FeedData(fileStream);
                         var altChunk = new XElement(w + "altChunk", new XAttribute(r + "id", altChuckId));
                         var mainDocumentXDoc = GetXDocument(doc);
-                        
-                        mainDocumentXDoc.Root.Element(w + "body").Elements(w + "p").Last().AddAfterSelf(altChunk);                        
-                        SaveXDocument(doc, mainDocumentXDoc);                        
+
+                        mainDocumentXDoc.Root.Element(w + "body").Elements(w + "p").Last().AddAfterSelf(altChunk);
+                        SaveXDocument(doc, mainDocumentXDoc);
                     }
                 }
-                
+
                 if (verbose) Console.WriteLine("Successfully merged all documents");
             }
             catch (Exception ex)
@@ -109,7 +98,7 @@ namespace DocxMerge
                 else
                 {
                     docText = regexText.Replace(docText, ".  ${a}");
-                }               
+                }
 
                 using (StreamWriter sw = new StreamWriter(wordDoc.MainDocumentPart.GetStream(FileMode.Create)))
                 {
